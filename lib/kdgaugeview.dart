@@ -260,7 +260,6 @@ class _KdGaugeCustomPainter extends CustomPainter {
         false,
         paint);
 
-
     //Going to draw division, Subdivision and Alert Circle
     paint.style = PaintingStyle.fill;
 
