@@ -55,17 +55,16 @@ key.currentState.updateSpeed(120, animate: true,duration: Duration(milliseconds:
 
 # Customization
   Depending on your view you may want to tweak the UI. For now you can these custom attributes
+
   | Property | Type | Description |
   |----------|------|-------------|
-  |'speed'| double| Initial speed for the Gauge|
-  |'speedTextStyle'| TextStyle| Text Style for Speed Text|
+  | 'speed' | double | Initial speed for the Gauge |
+  | 'speedTextStyle' | TextStyle | Text Style for Speed Text |
 
 
 
 # Screenshots
-![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/1.jpeg)
-
-![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.gif)
+![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.jpeg)   ![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.gif)
 
 # Author
   * **Saurabh K Sharma - [GIT](https://github.com/Sorbh)**

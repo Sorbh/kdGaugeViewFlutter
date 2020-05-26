@@ -30,6 +30,8 @@ class KdGaugeView extends StatefulWidget {
   final Duration duration;
   final int fractionDigits;
 
+  final Widget child;
+
   KdGaugeView(
       {this.speed = 0,
       this.speedTextStyle = const TextStyle(
@@ -61,6 +63,7 @@ class KdGaugeView extends StatefulWidget {
       this.animate = false,
       this.duration = const Duration(milliseconds: 400),
       this.fractionDigits = 0,
+      this.child,
       GlobalKey key})
       : assert(alertSpeedArray.length == alertColorArray.length,
             'Alert speed array length should be equal to Alert Speed Color Array length'),
@@ -116,7 +119,7 @@ class KdGaugeViewState extends State<KdGaugeView>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      foregroundPainter: _KdGaugeCustomPainter(
+      painter: _KdGaugeCustomPainter(
         _gaugeMarkSpeed,
         widget.speedTextStyle,
         widget.unitOfMeasurement,
@@ -135,7 +138,7 @@ class KdGaugeViewState extends State<KdGaugeView>
         widget.subDivisionCircleColors,
         widget.fractionDigits,
       ),
-      child: Container(),
+      child: widget.child ?? Container(),
     );
   }
 
@@ -207,17 +210,11 @@ class _KdGaugeCustomPainter extends CustomPainter {
       this.fractionDigits);
   @override
   void paint(Canvas canvas, Size size) {
-    //Rotate the canvas so offset angle can be correct
-    // canvas.rotate(degToRad(135));
-
     //get the center of the view
     center = size.center(Offset(0, 0));
 
-    // double minDimension = size.width > size.height ? size.height : size.width;
-    // mRadius = mRadius == null ? minDimension : mRadius;
-    // if (mRadius > minDimension) {
-    //   throw ('Radius should me smaller then the widget dimension');
-    // }
+    double minDimension = size.width > size.height ? size.height : size.width;
+    mRadius = minDimension / 2;
 
     mDottedCircleRadius = mRadius - innerCirclePadding;
 
@@ -263,22 +260,26 @@ class _KdGaugeCustomPainter extends CustomPainter {
         false,
         paint);
 
-    //draw inner dots(small one)
-    paint.color = subDivisionCircleColors;
-    paint.style = PaintingStyle.fill;
-    for (double i = 0; 270 >= i; i = i + 5) {
-      canvas.drawCircle(
-          _getDegreeOffsetOnCircle(mDottedCircleRadius, i + arcStartAngle),
-          2,
-          paint);
-    }
 
-    //draw inner dots(big one)
+    //Going to draw division, Subdivision and Alert Circle
+    paint.style = PaintingStyle.fill;
+
+    //draw division dots circle(big one)
     paint.color = divisionCircleColors;
     for (double i = 0; 270 >= i; i = i + 45) {
       canvas.drawCircle(
           _getDegreeOffsetOnCircle(mDottedCircleRadius, i + arcStartAngle),
-          4,
+          minDimension * .012,
+          paint);
+    }
+
+    //draw subDivision dots circle(small one)
+    paint.color = subDivisionCircleColors;
+
+    for (double i = 0; 270 >= i; i = i + 5) {
+      canvas.drawCircle(
+          _getDegreeOffsetOnCircle(mDottedCircleRadius, i + arcStartAngle),
+          minDimension * .005,
           paint);
     }
 
@@ -289,14 +290,20 @@ class _KdGaugeCustomPainter extends CustomPainter {
         canvas.drawCircle(
             _getDegreeOffsetOnCircle(mDottedCircleRadius,
                 _getAngleOfSpeed(alertSpeedArray[i]) + arcStartAngle),
-            6,
+            minDimension * .015,
             paint);
       }
     }
 
+    //Draw Min Text
     if (minSpeed != null) _drawMinText(canvas, size);
+    //Draw Max Text
     if (maxSpeed != null) _drawMaxText(canvas, size);
+
+    //Draw Unit of Measurement
     _drawUnitOfMeasurementText(canvas, size);
+
+    //Draw Speed Text
     _drawSpeedText(canvas, size);
   }
 
@@ -327,6 +334,8 @@ class _KdGaugeCustomPainter extends CustomPainter {
       minWidth: 0,
       maxWidth: size.width,
     );
+
+    //Get the start point of Gauge
     Offset offset =
         _getDegreeOffsetOnCircle(mDottedCircleRadius, arcStartAngle);
     //translate textPainter offset to bottom anchor the start point of the gauge
@@ -345,6 +354,8 @@ class _KdGaugeCustomPainter extends CustomPainter {
       minWidth: 0,
       maxWidth: size.width,
     );
+
+    //Get the end point of Gauge
     Offset offset = _getDegreeOffsetOnCircle(
         mDottedCircleRadius, arcStartAngle + arcSweepAngle);
     //translate textPainter offset to bottom anchor the start point of the gauge
@@ -398,5 +409,4 @@ class _KdGaugeCustomPainter extends CustomPainter {
   }
 
   static num degToRad(num deg) => deg * (math.pi / 180.0);
-  static num radToDeg(num rad) => rad * (180.0 / math.pi);
 }
