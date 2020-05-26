@@ -64,7 +64,10 @@ key.currentState.updateSpeed(120, animate: true,duration: Duration(milliseconds:
 
 
 # Screenshots
-![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.jpeg)   ![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.gif)
+<!-- ![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.jpg | width=300)   ![alt text](https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.gif) -->
+
+ <img src="https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.jpg" width="400" >
+ <img src="https://github.com/sorbh/kdGaugeViewFlutter/blob/master/raw/demo.gif" width="400" >
 
 # Author
   * **Saurabh K Sharma - [GIT](https://github.com/Sorbh)**
