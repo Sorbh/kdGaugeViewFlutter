@@ -4,7 +4,7 @@ KDGaugeView is a simple and customizable gauge control for Android inspired by [
 
 The source code is **100% Dart**.
 
-[![pub package](https://img.shields.io/pub/v/kdgaugeview.svg)](https://pub.dartlang.org/packages/kdgaugeview) ![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)
+[![pub package](https://img.shields.io/pub/v/kdgaugeview.svg?style=flat-square)](https://pub.dartlang.org/packages/kdgaugeview) ![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)
 
 
 # Motivation
