@@ -1,3 +1,7 @@
+## [1.0.3] - 5/04/2021.
+
+* Update to null safety.
+
 ## [1.0.2] - 26/05/2020.
 
 * Update Formatting.
