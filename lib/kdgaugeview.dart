@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math' as math;
@@ -20,6 +22,7 @@ class KdGaugeView extends StatefulWidget {
   final Color baseGaugeColor;
   final Color inactiveGaugeColor;
   final Color activeGaugeColor;
+  final ui.Gradient? activeGaugeGradientColor;
 
   final double innerCirclePadding;
 
@@ -33,7 +36,8 @@ class KdGaugeView extends StatefulWidget {
   final Widget? child;
 
   KdGaugeView(
-      {this.speed = 0,
+      {GlobalKey? key,
+      this.speed = 0,
       this.speedTextStyle = const TextStyle(
         color: Colors.black,
         fontSize: 60,
@@ -64,7 +68,7 @@ class KdGaugeView extends StatefulWidget {
       this.duration = const Duration(milliseconds: 400),
       this.fractionDigits = 0,
       this.child,
-      GlobalKey? key})
+      this.activeGaugeGradientColor})
       : assert(alertSpeedArray.length == alertColorArray.length,
             'Alert speed array length should be equal to Alert Speed Color Array length'),
         super(key: key);
@@ -126,24 +130,24 @@ class KdGaugeViewState extends State<KdGaugeView>
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _KdGaugeCustomPainter(
-        _gaugeMarkSpeed,
-        widget.speedTextStyle,
-        widget.unitOfMeasurement,
-        widget.unitOfMeasurementTextStyle,
-        widget.minSpeed,
-        widget.maxSpeed,
-        widget.minMaxTextStyle,
-        widget.alertSpeedArray,
-        widget.alertColorArray,
-        widget.gaugeWidth,
-        widget.baseGaugeColor,
-        widget.inactiveGaugeColor,
-        widget.activeGaugeColor,
-        widget.innerCirclePadding,
-        widget.divisionCircleColors,
-        widget.subDivisionCircleColors,
-        widget.fractionDigits,
-      ),
+          _gaugeMarkSpeed,
+          widget.speedTextStyle,
+          widget.unitOfMeasurement,
+          widget.unitOfMeasurementTextStyle,
+          widget.minSpeed,
+          widget.maxSpeed,
+          widget.minMaxTextStyle,
+          widget.alertSpeedArray,
+          widget.alertColorArray,
+          widget.gaugeWidth,
+          widget.baseGaugeColor,
+          widget.inactiveGaugeColor,
+          widget.activeGaugeColor,
+          widget.innerCirclePadding,
+          widget.divisionCircleColors,
+          widget.subDivisionCircleColors,
+          widget.fractionDigits,
+          widget.activeGaugeGradientColor),
       child: widget.child ?? Container(),
     );
   }
@@ -184,6 +188,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
   final Color baseGaugeColor;
   final Color inactiveGaugeColor;
   final Color activeGaugeColor;
+  final ui.Gradient? activeGaugeGradientColor;
 
   final double innerCirclePadding;
 
@@ -213,7 +218,8 @@ class _KdGaugeCustomPainter extends CustomPainter {
       this.innerCirclePadding,
       this.subDivisionCircleColors,
       this.divisionCircleColors,
-      this.fractionDigits);
+      this.fractionDigits,
+      this.activeGaugeGradientColor);
   @override
   void paint(Canvas canvas, Size size) {
     //get the center of the view
@@ -241,24 +247,30 @@ class _KdGaugeCustomPainter extends CustomPainter {
         false,
         paint..color = Colors.grey.withOpacity(.4));
 
-    //Draw active gauge view
-    if (alertSpeedArray.length > 0)
-      for (int i = 0; alertSpeedArray.length > i; i++) {
-        if (i == 0 && speed <= alertSpeedArray[i]) {
-          paint.color = activeGaugeColor;
-        } else if (i == alertSpeedArray.length - 1 &&
-            speed >= alertSpeedArray[i]) {
-          paint.color = alertColorArray[i];
-        } else if (alertSpeedArray[i] <= speed &&
-            speed <= alertSpeedArray[i + 1]) {
-          paint.color = alertColorArray[i];
-          break;
-        } else {
-          paint.color = activeGaugeColor;
+    if (activeGaugeGradientColor == null) {
+      //Draw active gauge view
+      if (alertSpeedArray.length > 0)
+        for (int i = 0; alertSpeedArray.length > i; i++) {
+          if (i == 0 && speed <= alertSpeedArray[i]) {
+            paint.color = activeGaugeColor;
+          } else if (i == alertSpeedArray.length - 1 &&
+              speed >= alertSpeedArray[i]) {
+            paint.color = alertColorArray[i];
+          } else if (alertSpeedArray[i] <= speed &&
+              speed <= alertSpeedArray[i + 1]) {
+            paint.color = alertColorArray[i];
+            break;
+          } else {
+            paint.color = activeGaugeColor;
+          }
         }
-      }
-    else
-      paint.color = activeGaugeColor;
+      else
+        paint.color = activeGaugeColor;
+    } else {
+      //if gradient is available, use the gradient color
+      paint.shader = activeGaugeGradientColor;
+    }
+
     canvas.drawArc(
         Rect.fromCircle(center: center!, radius: mRadius),
         degToRad(arcStartAngle) as double,
@@ -323,7 +335,9 @@ class _KdGaugeCustomPainter extends CustomPainter {
   }
 
   double _getAngleOfSpeed(double speed) {
-    return speed / ((maxSpeed - minSpeed) / arcSweepAngle);
+    //limit speed to max speed
+    return (speed < maxSpeed ? speed : maxSpeed) /
+        ((maxSpeed - minSpeed) / arcSweepAngle);
   }
 
   void _drawMinText(Canvas canvas, Size size) {

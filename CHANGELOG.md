@@ -1,3 +1,8 @@
+## [1.0.4] - 5/04/2021.
+
+* Added activeGaugeGradientColor to use gradient instead of activeColor.
+* limit speed to maxSpeed
+
 ## [1.0.3] - 5/04/2021.
 
 * Update to null safety.

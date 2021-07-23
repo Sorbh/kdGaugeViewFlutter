@@ -21,7 +21,7 @@ This library is posted in pub.dev
 #### pubspec.yaml
 ```dart
 dependencies:  
-	kdgaugeview: ^1.0.0
+	kdgaugeview: ^1.0.4
 ```
 
 # Usage

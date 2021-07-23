@@ -46,10 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.all(10),
               child: KdGaugeView(
                 minSpeed: 0,
-                maxSpeed: 180,
+                maxSpeed: 100,
                 speed: 120,
                 animate: true,
-                alertSpeedArray: [40, 80, 100],
+                alertSpeedArray: [40, 80, 90],
                 alertColorArray: [Colors.orange, Colors.indigo, Colors.red],
                 duration: Duration(seconds: 6),
               ),
