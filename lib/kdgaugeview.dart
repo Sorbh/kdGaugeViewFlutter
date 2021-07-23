@@ -30,7 +30,7 @@ class KdGaugeView extends StatefulWidget {
   final Duration duration;
   final int fractionDigits;
 
-  final Widget child;
+  final Widget? child;
 
   KdGaugeView(
       {this.speed = 0,
@@ -45,8 +45,8 @@ class KdGaugeView extends StatefulWidget {
         fontSize: 30,
         fontWeight: FontWeight.w600,
       ),
-      @required this.minSpeed,
-      @required this.maxSpeed,
+      required this.minSpeed,
+      required this.maxSpeed,
       this.minMaxTextStyle = const TextStyle(
         color: Colors.black,
         fontSize: 20,
@@ -64,7 +64,7 @@ class KdGaugeView extends StatefulWidget {
       this.duration = const Duration(milliseconds: 400),
       this.fractionDigits = 0,
       this.child,
-      GlobalKey key})
+      GlobalKey? key})
       : assert(alertSpeedArray.length == alertColorArray.length,
             'Alert speed array length should be equal to Alert Speed Color Array length'),
         super(key: key);
@@ -74,8 +74,8 @@ class KdGaugeView extends StatefulWidget {
 
 class KdGaugeViewState extends State<KdGaugeView>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   double _speed;
   bool _animate;
@@ -88,7 +88,7 @@ class KdGaugeViewState extends State<KdGaugeView>
   @override
   void initState() {
     if (_animate) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         updateSpeed(_speed, animate: _animate);
       });
     } else {
@@ -117,6 +117,12 @@ class KdGaugeViewState extends State<KdGaugeView>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _KdGaugeCustomPainter(
@@ -142,7 +148,7 @@ class KdGaugeViewState extends State<KdGaugeView>
     );
   }
 
-  void updateSpeed(double speed, {bool animate = false, Duration duration}) {
+  void updateSpeed(double speed, {bool animate = false, Duration? duration}) {
     if (animate) {
       this._speed = speed;
       _controller.reset();
@@ -184,7 +190,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
   final Color subDivisionCircleColors;
   final Color divisionCircleColors;
 
-  Offset center;
+  Offset? center;
   double mRadius = 200;
   double mDottedCircleRadius = 0;
 
@@ -225,18 +231,18 @@ class _KdGaugeCustomPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
 
     //Draw base gauge
-    canvas.drawCircle(center, mRadius, paint..color = baseGaugeColor);
+    canvas.drawCircle(center!, mRadius, paint..color = baseGaugeColor);
 
     //Draw inactive gauge view
     canvas.drawArc(
-        Rect.fromCircle(center: center, radius: mRadius),
-        degToRad(arcStartAngle),
-        degToRad(arcSweepAngle),
+        Rect.fromCircle(center: center!, radius: mRadius),
+        degToRad(arcStartAngle) as double,
+        degToRad(arcSweepAngle) as double,
         false,
         paint..color = Colors.grey.withOpacity(.4));
 
     //Draw active gauge view
-    if (alertSpeedArray != null && alertSpeedArray.length > 0)
+    if (alertSpeedArray.length > 0)
       for (int i = 0; alertSpeedArray.length > i; i++) {
         if (i == 0 && speed <= alertSpeedArray[i]) {
           paint.color = activeGaugeColor;
@@ -254,9 +260,9 @@ class _KdGaugeCustomPainter extends CustomPainter {
     else
       paint.color = activeGaugeColor;
     canvas.drawArc(
-        Rect.fromCircle(center: center, radius: mRadius),
-        degToRad(arcStartAngle),
-        degToRad(_getAngleOfSpeed(speed)),
+        Rect.fromCircle(center: center!, radius: mRadius),
+        degToRad(arcStartAngle) as double,
+        degToRad(_getAngleOfSpeed(speed)) as double,
         false,
         paint);
 
@@ -283,21 +289,19 @@ class _KdGaugeCustomPainter extends CustomPainter {
     }
 
     //Draw alert indicator
-    if (alertSpeedArray != null) {
-      for (int i = 0; alertSpeedArray.length > i; i++) {
-        paint.color = alertColorArray[i];
-        canvas.drawCircle(
-            _getDegreeOffsetOnCircle(mDottedCircleRadius,
-                _getAngleOfSpeed(alertSpeedArray[i]) + arcStartAngle),
-            minDimension * .015,
-            paint);
-      }
+    for (int i = 0; alertSpeedArray.length > i; i++) {
+      paint.color = alertColorArray[i];
+      canvas.drawCircle(
+          _getDegreeOffsetOnCircle(mDottedCircleRadius,
+              _getAngleOfSpeed(alertSpeedArray[i]) + arcStartAngle),
+          minDimension * .015,
+          paint);
     }
 
     //Draw Min Text
-    if (minSpeed != null) _drawMinText(canvas, size);
+    _drawMinText(canvas, size);
     //Draw Max Text
-    if (maxSpeed != null) _drawMaxText(canvas, size);
+    _drawMaxText(canvas, size);
 
     //Draw Unit of Measurement
     _drawUnitOfMeasurementText(canvas, size);
@@ -312,9 +316,9 @@ class _KdGaugeCustomPainter extends CustomPainter {
   }
 
   Offset _getDegreeOffsetOnCircle(double radius, double angle) {
-    double radian = degToRad(angle);
-    double dx = (center.dx + radius * math.cos(radian));
-    double dy = (center.dy + radius * math.sin(radian));
+    double radian = degToRad(angle) as double;
+    double dx = (center!.dx + radius * math.cos(radian));
+    double dy = (center!.dy + radius * math.sin(radian));
     return Offset(dx, dy);
   }
 
@@ -389,7 +393,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
   void _drawSpeedText(Canvas canvas, Size size) {
     //We are going to draw this text in the center of the widget
 
-    Offset unitOfMeasurementOffset = center;
+    Offset? unitOfMeasurementOffset = center;
 
     TextSpan span = new TextSpan(
         style: speedTextStyle, text: speed.toStringAsFixed(fractionDigits));
@@ -403,7 +407,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
     );
 
     unitOfMeasurementOffset =
-        center.translate(-textPainter.width / 2, -textPainter.height / 2);
+        center!.translate(-textPainter.width / 2, -textPainter.height / 2);
     textPainter.paint(canvas, unitOfMeasurementOffset);
   }
 

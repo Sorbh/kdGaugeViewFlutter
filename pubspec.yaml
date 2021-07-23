@@ -1,10 +1,10 @@
 name: kdgaugeview
 description: KDGaugeView is a simple and customizable gauge control for Flutter
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/Sorbh/kdGaugeViewFlutter
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
