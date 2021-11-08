@@ -33,6 +33,8 @@ class KdGaugeView extends StatefulWidget {
   final Duration duration;
   final int fractionDigits;
 
+  final Color inactiveArcColor;
+
   final Widget? child;
 
   KdGaugeView(
@@ -63,6 +65,7 @@ class KdGaugeView extends StatefulWidget {
       this.activeGaugeColor = Colors.green,
       this.innerCirclePadding = 30,
       this.divisionCircleColors = Colors.blue,
+      this.inactiveArcColor = Colors.grey,
       this.subDivisionCircleColors = Colors.blue,
       this.animate = false,
       this.duration = const Duration(milliseconds: 400),
@@ -130,6 +133,7 @@ class KdGaugeViewState extends State<KdGaugeView>
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _KdGaugeCustomPainter(
+          widget.inactiveArcColor,
           _gaugeMarkSpeed,
           widget.speedTextStyle,
           widget.unitOfMeasurement,
@@ -195,6 +199,8 @@ class _KdGaugeCustomPainter extends CustomPainter {
   final Color subDivisionCircleColors;
   final Color divisionCircleColors;
 
+  final Color inactiveArcColor;
+
   Offset? center;
   double mRadius = 200;
   double mDottedCircleRadius = 0;
@@ -202,6 +208,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
   final int fractionDigits;
 
   _KdGaugeCustomPainter(
+      this.inactiveArcColor,
       this.speed,
       this.speedTextStyle,
       this.unitOfMeasurement,
@@ -245,7 +252,7 @@ class _KdGaugeCustomPainter extends CustomPainter {
         degToRad(arcStartAngle) as double,
         degToRad(arcSweepAngle) as double,
         false,
-        paint..color = Colors.grey.withOpacity(.4));
+        paint..color = inactiveArcColor);
 
     if (activeGaugeGradientColor == null) {
       //Draw active gauge view
