@@ -29,7 +29,7 @@ dependencies:
 After Importing this library, you can directly use this view in your Widget tree
 
 ```dart
-import  'package:kdgaugeview/kdgaugeviewflutter.dart';
+import  'package:kdgaugeview/kdgaugeview.dart';
 ```
 
 ```
