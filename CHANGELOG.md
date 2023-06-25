@@ -1,3 +1,7 @@
+## [1.0.5] - 26/06/2023.
+
+* FIX: Resolve the issue with update Gauge speed
+
 ## [1.0.4] - 5/04/2021.
 
 * Added activeGaugeGradientColor to use gradient instead of activeColor.

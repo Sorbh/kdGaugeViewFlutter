@@ -90,7 +90,7 @@ class KdGaugeViewState extends State<KdGaugeView> with SingleTickerProviderState
   @override
   void initState() {
     if (_animate) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         updateSpeed(_speed, animate: _animate);
       });
     } else {
